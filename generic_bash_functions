@@ -1,0 +1,79 @@
+#!/bin/bash
+###
+# @Author Martin Bortel
+# @Web    http://martinbortel.cz
+# @Email  me@martinbortel.cz
+# @Created  02/07/2018
+# @Updated  06/07/2018
+# 
+# @Package  My generic bash functions
+#
+###
+
+function log(){
+  # Usage: log <level> <message>
+  # level: i|w|e
+  # message: log message
+
+  if [[ ! -z $LOG_FILE && -d $(dirname $LOG_FILE) ]];then
+    if [[ ! -f $LOG_FILE ]];then
+      touch $LOG_FILE
+    fi
+    log_file=$LOG_FILE
+    time_stamp=$(date +"%Y-%m-%d %H:%I:%S %Z")
+  else
+    log_file=/dev/null
+    time_stamp=""
+  fi
+  # echo $LOG_FILE
+  # echo $(dirname $LOG_FILE)
+  # echo $log_file
+  # echo $time_stamp
+
+  ##
+  # Color table
+  # --
+  # Black        0;30     Dark Gray     1;30
+  # Red          0;31     Light Red     1;31
+  # Green        0;32     Light Green   1;32
+  # Brown/Orange 0;33     Yellow        1;33
+  # Blue         0;34     Light Blue    1;34
+  # Purple       0;35     Light Purple  1;35
+  # Cyan         0;36     Light Cyan    1;36
+  # Light Gray   0;37     White         1;37
+  # --
+  # Colour output
+  #    .---------- constant part!
+  #    vvvv vvvv-- the code from above
+  # RED='\033[0;31m'
+  # NC='\033[0m' # No Color
+  # printf "I ${RED}love${NC} Stack Overflow\n"
+  NC='\033[0m' # No Color
+  case $1 in
+    \?)
+      COLOUR='\033[0;37m'
+      printf "$time_stamp | ${COLOUR}[?]${NC} $2" | tee -a $log_file
+      ;;
+    d)
+      COLOUR='\033[1;30m'
+      printf "$time_stamp | ${COLOUR}[d]${NC} $2\n" | tee -a $log_file
+      ;;
+    i)
+      COLOUR='\033[0;32m'
+      printf "$time_stamp | ${COLOUR}[i]${NC} $2\n" | tee -a $log_file
+      ;;
+    w)
+      COLOUR='\033[0;31m'
+      printf "$time_stamp | ${COLOUR}[w] $2${NC}\n" | tee -a $log_file
+      ;;
+    e)
+      COLOUR='\033[1;31m'
+      printf "$time_stamp | ${COLOUR}[e] $2${NC}\n" | tee -a $log_file
+      ;;
+    *)
+      printf "$time_stamp $1\n" | tee -a $log_file
+      ;;
+  esac
+}
+#EOF
+###
