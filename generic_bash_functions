@@ -3,7 +3,7 @@
 # @Author Martin Bortel
 # @Email  martin.bortel@gmail.com
 # @Created  02/07/2018
-# @Updated  06/07/2018
+# @Updated  20/03/2019
 # 
 # @Package  My generic bash functions
 #
@@ -11,7 +11,7 @@
 
 function log(){
   # Usage: log <level> <message>
-  # level: i|w|e
+  # level: [d]ebug|[i]nfo|[w]arning|[e]rror
   # message: log message
 
   if [[ ! -z $LOG_FILE && -d $(dirname $LOG_FILE) ]];then
@@ -24,10 +24,6 @@ function log(){
     log_file=/dev/null
     time_stamp=""
   fi
-  # echo $LOG_FILE
-  # echo $(dirname $LOG_FILE)
-  # echo $log_file
-  # echo $time_stamp
 
   ##
   # Color table
