@@ -10,6 +10,9 @@
 ###
 
 function log(){
+  #
+  # Log messages to stdout or $LOG_FILE if set
+  #
   # Usage: log <level> <message>
   # level: [d]ebug|[i]nfo|[w]arning|[e]rror
   # message: log message
@@ -69,6 +72,26 @@ function log(){
       printf "$time_stamp $1\n" | tee -a $log_file
       ;;
   esac
-}
-#EOF
-###
+  }
+function sys_log() {
+  #
+  # Log messages to local6 (/var/log/local6)
+  #
+	# $1 - severity (debug|info|warning|error)
+	# $2 - log message
+	#
+	# EXAMPLE:
+	# log debug "Info level log message into local6 syslog facility with prefix [debug]"
+	# log info "Info level log message into local6 syslog facility with prefix [info]"
+	# log warning "Info level log message into local6 syslog facility with prefix [warning]"
+	# log error "Info level log message into local6 syslog facility with prefix [error]"
+	#
+	# @TODO:
+  #   - Update to use severity levels - if possible, not just prefix
+	if [[ -f /usr/bin/logger ]];then
+		if [ $# -gt 0 ]; then
+			/usr/bin/logger -i -t $0 -p local6.info "[$1] $2"
+		fi
+	fi
+  }
+# EOF
