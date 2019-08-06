@@ -4,8 +4,10 @@
 Set of bash functions useful at all times.
 
 ## Functions list
+Default log level is "info". Can be changed by setting $LOG\_LEVEL.  
+
 ### log
-Log messages with severity ([d]ebug|[i]nfo|[w]arning|[e]rror) to stdout or $LOG_FILE if set.  
+Log messages with severity ([d]ebug|[i]nfo|[w]arning|[e]rror) to stdout or $LOG\_FILE if set.  
 ```sh
 log <severity> <message>
 ```
@@ -19,7 +21,7 @@ LOG_FILE will contain:
 stdout will contain (while the [i] will be green):
 2019-04-02 14:02:53 CEST | [i] This is a log message with severity info
 ```
-### sys_log
+### sys\_log
 Log message with severity prefix (debug|info|warning|error) to /var/log/local6.  
 ```sh
 sys_log <severity> <message>
