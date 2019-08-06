@@ -32,6 +32,12 @@ sys_log info "This is a log message with severity prefix info"
 2019-04-02T12:07:23.199934+00:00 rnd-vm-10-198 -bash[12662]: [info] This is a log message with severity prefix info
 ```
 
+## Usage
+```sh
+git clone https://github.com/lanthean/generic_bash_functions.git
+source ./generic_bash_functions/generic_bash_functions
+```
+
 ## Contact me
 e	martin.bortel@gmail.com  
 g https://github.com/lanthean  
