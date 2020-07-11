@@ -3,19 +3,25 @@
 # @Author Martin Bortel
 # @Email  martin.bortel@gmail.com
 # @Created  02/07/2018
-# @Updated  20/03/2019
+# @Updated  11/07/2020
 # 
 # @Package  My generic bash functions
 #
 ###
-
 function log(){
   #
   # Log messages to stdout or $LOG_FILE if set
+  # $LOG_LEVEL="i"
   #
   # Usage: log <level> <message>
   # level: [d]ebug|[i]nfo|[w]arning|[e]rror
   # message: log message
+
+  declare -a levels=([d]=0 [i]=1 [w]=2 [e]=3)
+  if [ -z $LOG_LEVEL ];then
+    LOG_LEVEL="i"
+  fi
+  script_logging_level=$LOG_LEVEL
 
   if [[ ! -z $LOG_FILE && -d $(dirname $LOG_FILE) ]];then
     if [[ ! -f $LOG_FILE ]];then
@@ -27,6 +33,15 @@ function log(){
     log_file=/dev/null
     time_stamp=""
   fi
+
+  local log_priority="$1"
+  local log_message="$2"
+
+  #check if level exists
+  [[ ${levels[$log_priority]} ]] || return 1
+
+  #check if level is enough
+  (( ${levels[$log_priority]} < ${levels[$script_logging_level]} )) && return 2
 
   ##
   # Color table
@@ -47,35 +62,37 @@ function log(){
   # NC='\033[0m' # No Color
   # printf "I ${RED}love${NC} Stack Overflow\n"
   NC='\033[0m' # No Color
-  case $1 in
+  case $log_priority in
     \?)
       COLOUR='\033[0;37m'
-      printf "$time_stamp | ${COLOUR}[?]${NC} $2" | tee -a $log_file
+      printf "$time_stamp | ${COLOUR}[?]${NC} $log_message" | tee -a $log_file
       ;;
     d)
       COLOUR='\033[1;30m'
-      printf "$time_stamp | ${COLOUR}[d]${NC} $2\n" | tee -a $log_file
+      printf "$time_stamp | ${COLOUR}[d]${NC} $log_message\n" | tee -a $log_file
       ;;
     i)
       COLOUR='\033[0;32m'
-      printf "$time_stamp | ${COLOUR}[i]${NC} $2\n" | tee -a $log_file
+      printf "$time_stamp | ${COLOUR}[i]${NC} $log_message\n" | tee -a $log_file
       ;;
     w)
       COLOUR='\033[0;31m'
-      printf "$time_stamp | ${COLOUR}[w] $2${NC}\n" | tee -a $log_file
+      printf "$time_stamp | ${COLOUR}[w] $log_message${NC}\n" | tee -a $log_file
       ;;
     e)
       COLOUR='\033[1;31m'
-      printf "$time_stamp | ${COLOUR}[e] $2${NC}\n" | tee -a $log_file
+      printf "$time_stamp | ${COLOUR}[e] $log_message${NC}\n" | tee -a $log_file
       ;;
     *)
       printf "$time_stamp $1\n" | tee -a $log_file
       ;;
   esac
   }
+
 function sys_log() {
   #
   # Log messages to local6 (/var/log/local6)
+  # LOG_LEVEL="info"
   #
 	# $1 - severity (debug|info|warning|error)
 	# $2 - log message
@@ -88,6 +105,20 @@ function sys_log() {
 	#
 	# @TODO:
   #   - Update to use severity levels - if possible, not just prefix
+  declare -a levels=([debug]=0 [info]=1 [warning]=2 [error]=3)
+  if [ -z $LOG_LEVEL ];then
+    LOG_LEVEL="info"
+  fi
+
+  local log_priority=$1
+  local log_message=$2
+
+  #check if level exists
+  [[ ${levels[$log_priority]} ]] || return 1
+
+  #check if level is enough
+  (( ${levels[$log_priority]} < ${levels[$script_logging_level]} )) && return 2
+	
 	if [[ -f /usr/bin/logger ]];then
 		if [ $# -gt 0 ]; then
 			/usr/bin/logger -i -t $0 -p local6.info "[$1] $2"
