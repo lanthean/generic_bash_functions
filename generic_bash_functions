@@ -84,7 +84,7 @@ function log(){
       printf "$time_stamp | ${COLOUR}[e] $log_message${NC}\n" | tee -a $log_file
       ;;
     *)
-      printf "$time_stamp $1\n" | tee -a $log_file
+      printf "$time_stamp $log_message\n" | tee -a $log_file
       ;;
   esac
   }
