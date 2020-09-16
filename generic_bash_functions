@@ -3,7 +3,7 @@
 # @Author Martin Bortel
 # @Email  martin.bortel@gmail.com
 # @Created  02/07/2018
-# @Updated  05/09/2019
+# @Updated  11/07/2020
 # 
 # @Package  My generic bash functions
 #
@@ -11,19 +11,17 @@
 function log(){
   #
   # Log messages to stdout or $LOG_FILE if set
-  # $LOG_LEVEL="info"
+  # $LOG_LEVEL="i"
   #
   # Usage: log <level> <message>
   # level: [d]ebug|[i]nfo|[w]arning|[e]rror
   # message: log message
 
   declare -a levels=([d]=0 [i]=1 [w]=2 [e]=3)
-  if [ -z $LOGGING_LEVEL ];then
-    LOGGING_LEVEL="i"
+  if [ -z $LOG_LEVEL ];then
+    LOG_LEVEL="i"
   fi
-	if [ -z $script_logging_level ];then
-		script_logging_level=$LOGGING_LEVEL
-	fi
+  script_logging_level=$LOG_LEVEL
 
   if [[ ! -z $LOG_FILE && -d $(dirname $LOG_FILE) ]];then
     if [[ ! -f $LOG_FILE ]];then
@@ -64,7 +62,7 @@ function log(){
   # NC='\033[0m' # No Color
   # printf "I ${RED}love${NC} Stack Overflow\n"
   NC='\033[0m' # No Color
-  case $script_logging_level in
+  case $log_priority in
     \?)
       COLOUR='\033[0;37m'
       printf "$time_stamp | ${COLOUR}[?]${NC} $log_message" | tee -a $log_file
@@ -94,7 +92,7 @@ function log(){
 function sys_log() {
   #
   # Log messages to local6 (/var/log/local6)
-  # LOGGING_LEVEL="info"
+  # LOG_LEVEL="info"
   #
 	# $1 - severity (debug|info|warning|error)
 	# $2 - log message
@@ -108,8 +106,8 @@ function sys_log() {
 	# @TODO:
   #   - Update to use severity levels - if possible, not just prefix
   declare -a levels=([debug]=0 [info]=1 [warning]=2 [error]=3)
-  if [ -z $LOGGING_LEVEL ];then
-    LOGGING_LEVEL="info"
+  if [ -z $LOG_LEVEL ];then
+    LOG_LEVEL="info"
   fi
 
   local log_priority=$1
