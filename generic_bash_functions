@@ -76,7 +76,7 @@ function log(){
       printf "$time_stamp | ${COLOUR}[i]${NC} $log_message\n" | tee -a $log_file
       ;;
     w)
-      COLOUR='\033[0;31m'
+      COLOUR='\033[0;37m'
       printf "$time_stamp | ${COLOUR}[w] $log_message${NC}\n" | tee -a $log_file
       ;;
     e)
