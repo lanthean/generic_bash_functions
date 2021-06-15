@@ -19,9 +19,8 @@ function log(){
 
   declare -a levels=([t]=0 [d]=1 [i]=2 [w]=3 [e]=4 [c]=5)
   if [ -z $LOG_LEVEL ];then
-    LOG_LEVEL="i"
+    LOG_LEVEL=i
   fi
-  script_logging_level=$LOG_LEVEL
 
   if [[ ! -z $LOG_FILE && -d $(dirname $LOG_FILE) ]];then
     if [[ ! -f $LOG_FILE ]];then
@@ -40,7 +39,7 @@ function log(){
   #check if level exists
   if [[ ${levels[$log_priority]} ]];then
     #check if level is enough
-    (( ${levels[$log_priority]} < ${levels[$script_logging_level]} )) && return 2
+    (( ${levels[$log_priority]} < ${levels[$LOG_LEVEL]} )) && return 2
   fi
 
   ##
@@ -67,6 +66,10 @@ function log(){
       COLOUR='\033[0;37m'
       printf "$time_stamp | ${COLOUR}[?]${NC} $log_message" | tee -a $log_file
       ;;
+    t)
+      COLOUR='\033[1;30m'
+      printf "$time_stamp | ${COLOUR}[t]${NC} $log_message\n" | tee -a $log_file
+      ;;
     d)
       COLOUR='\033[1;30m'
       printf "$time_stamp | ${COLOUR}[d]${NC} $log_message\n" | tee -a $log_file
@@ -82,6 +85,10 @@ function log(){
     e)
       COLOUR='\033[1;31m'
       printf "$time_stamp | ${COLOUR}[e] $log_message${NC}\n" | tee -a $log_file
+      ;;
+    c)
+      COLOUR='\033[1;31m'
+      printf "$time_stamp | ${COLOUR}[c] $log_message${NC}\n" | tee -a $log_file
       ;;
     *)
       printf "$time_stamp $log_message\n" | tee -a $log_file
@@ -116,7 +123,7 @@ function sys_log() {
   #check if level exists
   [[ ${levels[$log_priority]} ]] || return 1
   #check if level is enough
-  (( ${levels[$log_priority]} < ${levels[$script_logging_level]} )) && return 2
+  (( ${levels[$log_priority]} < ${levels[$LOG_LEVEL]} )) && return 2
 	
 	if [[ -f /usr/bin/logger ]];then
 		if [ $# -gt 0 ]; then
